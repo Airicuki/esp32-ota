@@ -7,7 +7,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
-#include "esp_event_loop.h"
+//#include "esp_event_loop.h"
+#include "esp_event.h"
 #include "esp_log.h"
 
 #include "lwip/err.h"
@@ -139,6 +140,8 @@ static esp_err_t mqtt_event_handler(esp_mqtt_event_handle_t event)
         break;
     case MQTT_EVENT_BEFORE_CONNECT:
         ESP_LOGD(TAG, "MQTT_EVENT_BEFORE_CONNECT");
+        break;
+    default:
         break;
     }
     return ESP_OK;
@@ -359,15 +362,22 @@ static void mqtt_app_start(const char *running_partition_label)
 {
     assert(running_partition_label != NULL);
 
-    const char *mqtt_url = get_mqtt_url(running_partition_label);
-    const uint32_t mqtt_port = get_mqtt_port(running_partition_label);
-    const char *mqtt_access_token = get_mqtt_access_token(running_partition_label);
+    //const char *mqtt_url = get_mqtt_url(running_partition_label);
+    const char *mqtt_url = "mqtt://demo.thingsboard.io";
+    //const uint32_t mqtt_port = get_mqtt_port(running_partition_label);
+    const uint32_t mqtt_port = 1883;
+    //const char *mqtt_access_token = get_mqtt_access_token(running_partition_label);
+    const char *mqtt_access_token = "QfioDDKBqu1Rp6PqOelJ";
 
     esp_mqtt_client_config_t mqtt_cfg = {
-        .uri = mqtt_url,
+        /*.uri = mqtt_url,
         .event_handle = mqtt_event_handler,
         .port = mqtt_port,
-        .username = mqtt_access_token
+        .username = mqtt_access_token*/
+        .uri = "mqtt://demo.thingsboard.io",
+        .event_handle = mqtt_event_handler,
+        .port = 1883,
+        .username = "QfioDDKBqu1Rp6PqOelJ",
     };
 
     mqtt_client = esp_mqtt_client_init(&mqtt_cfg);
